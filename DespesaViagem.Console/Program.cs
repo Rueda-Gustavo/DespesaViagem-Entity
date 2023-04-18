@@ -1,10 +1,12 @@
-﻿using DespesaViagem.Domain.Models.Core.Records;
+﻿using CSharpFunctionalExtensions;
+using DespesaViagem.Domain.Models.Core.Records;
 using DespesaViagem.Domain.Models.Despesas;
 using DespesaViagem.Domain.Models.Viagens;
 
 using DespesaViagem.Infra.Database;
 using DespesaViagem.Infra.Interfaces;
 using DespesaViagem.Infra.Repositories;
+using DespesaViagem.Service.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
@@ -25,15 +27,15 @@ namespace DespesaViagem
             //CreateServices(configuration);
 
             //Console.WriteLine("Hello, World!");
-            //var optionsBuilder = new DbContextOptionsBuilder<DespesaViagemContext>();
-            //optionsBuilder.UseSqlServer("");
-            //var context = new DespesaViagemContext(optionsBuilder.Options);
+            var optionsBuilder = new DbContextOptionsBuilder<DespesaViagemContext>();
+            optionsBuilder.UseSqlServer("Data Source=GUSTAVO;Initial Catalog=DespesaViagem;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            var context = new DespesaViagemContext(optionsBuilder.Options);
 
-            /*
-            Viagem viagem = new Viagem(1, "Viagem 1", "Primeiro teste de Viagem", 2000, new Agendamento(), new Funcionario());
-            DespesaDeslocamento despesa = new DespesaDeslocamento(1, "Viagem a trabalho", 400, 1.5m, new Veiculo { Modelo = "Corsa", Placa = "ABC1234" });
-            viagem.AdicionarDespesa(despesa);
-            */
+
+            //Viagem viagem = new Viagem(1, "Viagem 1", "Primeiro teste de Viagem", 2000, new Agendamento(), new Funcionario());
+            //DespesaDeslocamento despesa = new DespesaDeslocamento(1, "Viagem a trabalho", 400, 1.5m, new Veiculo { Modelo = "Corsa", Placa = "ABC1234" });
+            //viagem.AdicionarDespesa(despesa);
+
 
             //Viagem viagem = new Viagem("Viagem 1", "Primeira viagem", 2000.0m, DateTime.UtcNow.AddDays(5), DateTime.UtcNow, "Gustavo", "100");
 
@@ -53,8 +55,9 @@ namespace DespesaViagem
             //context.Viagens.Add(viagem);
             //context.SaveChanges();
             
+            */
             ViagemRepository vr = new ViagemRepository(context);
-            
+            /*
             
             Task task = vr.InsertAsync(viagem);     
             task.Wait();
@@ -85,6 +88,11 @@ namespace DespesaViagem
 
             //---------------------------------------------------------------------------------------------
             //Testando consulta
+            ViagemService vs = new ViagemService(vr);
+
+            Task<Result<IEnumerable<Viagem>>> a = vs.ObterTodasViagens();
+            a.Wait();
+            var b = a.Result;
             /*Task<IEnumerable<Viagem>> consulta = vr.ObterAsync("2");
             consulta.Wait();         
             

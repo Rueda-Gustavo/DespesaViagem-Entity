@@ -20,12 +20,21 @@ namespace DespesaViagem.API.Controllers
         [HttpGet("Listar")]
         public async Task<ActionResult> ObterTodasViagens()
         {
-            Result<IEnumerable<Viagem>> result = await _viagemService.ObterTodasViagens();
+            Result<IEnumerable<Viagem>> result = null;
+            try
+            {
+                result = await _viagemService.ObterTodasViagens();
+            }
+            catch (Exception e)
+            {
+                var a = e.Message;
+            }
             if (result.IsFailure)
-                return BadRequest(result);
+                    return BadRequest(result);
 
-            List<Viagem> viagens = result.Value.ToList();
-            return Ok(viagens);
+                List<Viagem> viagens = result.Value.ToList();
+                return Ok(viagens);
+            
         }
 
     }

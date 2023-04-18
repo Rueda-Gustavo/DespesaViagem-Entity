@@ -22,6 +22,7 @@
 	<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
     <ProjectReference Include="..\DespesaViagem.Domain\DespesaViagem.Domain.csproj" />
     <ProjectReference Include="..\DespesaViagem.Infra\DespesaViagem.Infra.csproj" />
+    <ProjectReference Include="..\DespesaViagem.Service\DespesaViagem.Service.csproj" />
   </ItemGroup>
 
 </Project>
