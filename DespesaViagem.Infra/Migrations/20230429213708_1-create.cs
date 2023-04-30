@@ -6,13 +6,30 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DespesaViagem.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class create1 : Migration
+    public partial class _1create : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Viagem",
+                name: "Enderecos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Logradouro = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NumeroCasa = table.Column<int>(type: "int", nullable: false),
+                    CEP = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enderecos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Viagens",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -29,87 +46,84 @@ namespace DespesaViagem.Infra.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Viagem", x => x.Id);
+                    table.PrimaryKey("PK_Viagens", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Despesas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     NomeDespesa = table.Column<string>(type: "varchar(30)", nullable: false),
                     DescricaoDespesa = table.Column<string>(type: "varchar(200)", nullable: false),
                     TotalDespesa = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     DataDespesa = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TipoDespesa = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false)
+                    TipoDespesa = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
+                    IdViagem = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Despesas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Despesas_Viagem_Id",
-                        column: x => x.Id,
-                        principalTable: "Viagem",
+                        name: "FK_Despesas_Viagens_IdViagem",
+                        column: x => x.IdViagem,
+                        principalTable: "Viagens",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "DespesaHospedagem",
+                name: "DespesasHospedagem",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
                     QuantidadeDias = table.Column<int>(type: "integer", nullable: false),
-                    ValorDiaria = table.Column<decimal>(type: "decimal(18,0)", nullable: false)
+                    ValorDiaria = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
+                    IdEndereco = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DespesaHospedagem", x => x.Id);
+                    table.PrimaryKey("PK_DespesasHospedagem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DespesaHospedagem_Despesas_Id",
+                        name: "FK_DespesasHospedagem_Despesas_Id",
                         column: x => x.Id,
                         principalTable: "Despesas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Endereco",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Logradouro = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NumeroCasa = table.Column<int>(type: "int", nullable: false),
-                    CEP = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Cidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Endereco", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Endereco_DespesaHospedagem_Id",
-                        column: x => x.Id,
-                        principalTable: "DespesaHospedagem",
+                        name: "FK_DespesasHospedagem_Enderecos_IdEndereco",
+                        column: x => x.IdEndereco,
+                        principalTable: "Enderecos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Despesas_IdViagem",
+                table: "Despesas",
+                column: "IdViagem");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DespesasHospedagem_IdEndereco",
+                table: "DespesasHospedagem",
+                column: "IdEndereco");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Endereco");
-
-            migrationBuilder.DropTable(
-                name: "DespesaHospedagem");
+                name: "DespesasHospedagem");
 
             migrationBuilder.DropTable(
                 name: "Despesas");
 
             migrationBuilder.DropTable(
-                name: "Viagem");
+                name: "Enderecos");
+
+            migrationBuilder.DropTable(
+                name: "Viagens");
         }
     }
 }

@@ -4,6 +4,7 @@ using DespesaViagem.Infra.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DespesaViagem.Infra.Migrations
 {
     [DbContext(typeof(DespesaViagemContext))]
-    partial class DespesaViagemContextModelSnapshot : ModelSnapshot
+    [Migration("20230430000651_2-create")]
+    partial class _2create
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,7 +99,7 @@ namespace DespesaViagem.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Funcionarios", (string)null);
+                    b.ToTable("Funcionario", (string)null);
                 });
 
             modelBuilder.Entity("DespesaViagem.Domain.Models.Despesas.Despesa", b =>

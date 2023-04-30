@@ -20,9 +20,10 @@ namespace DespesaViagem.Domain.Models.Viagens
         {
             get { return _despesas.AsReadOnly(); }
         }
-        //public Funcionario Funcionario { get; private set; }
-        public string NomeFuncionario { get; private set; }
-        public string MatriculaFuncionario { get; private set; }
+        public Funcionario Funcionario { get; private set; }
+        public int IdFuncionario { get; private set; }
+        //public string NomeFuncionario { get; private set; }
+        //public string MatriculaFuncionario { get; private set; }
         //public List<DespesaDeslocamento> DespesaDeslocamento { get; set; }
         //public List<DespesaHospedagem> DespesaHospedagem { get; set; }
         //public List<DespesaPassagem> DespesaPassagem { get; set; }
@@ -30,16 +31,18 @@ namespace DespesaViagem.Domain.Models.Viagens
 
         private List<Despesa> _despesas = new List<Despesa>(); 
 
-        public Viagem(int id, string nomeViagem, string descricaoViagem, decimal adiantamento, Agendamento agendamento, Funcionario funcionario)
+        public Viagem(/*int id,*/string nomeViagem, string descricaoViagem, decimal adiantamento, DateTime dataInicial, DateTime dataFinal, Funcionario funcionario)
         {
-            Id = id;
+            //Id = id;
             NomeViagem = nomeViagem;
             DescricaoViagem = descricaoViagem;
+            Adiantamento = adiantamento;
+            DataFinal = dataFinal;
             Adiantamento = adiantamento;
             //Agendamento = agendamento;
             TotalDespesas = 0;
             StatusViagem = Status.Aberta;
-            //Funcionario = funcionario;
+            Funcionario = funcionario;
         }
 
         public Viagem() { }
@@ -53,8 +56,8 @@ namespace DespesaViagem.Domain.Models.Viagens
             DataFinal = dataFinal;
             Adiantamento = adiantamento;
             TotalDespesas = 0;
-            NomeFuncionario = nomeFuncionario;
-            MatriculaFuncionario = matriculaFuncionario;
+            //NomeFuncionario = nomeFuncionario;
+            //MatriculaFuncionario = matriculaFuncionario;
         }
 
         public void AdicionarDespesa(Despesa despesa)
@@ -62,6 +65,21 @@ namespace DespesaViagem.Domain.Models.Viagens
             if (despesa.TotalDespesa > 0 && StatusViagem == Status.EmAndamento)
                 TotalDespesas += despesa.TotalDespesa;
             _despesas.Add(despesa);
+        }
+
+        public void AdicionarDespesas(IEnumerable<Despesa> despesas)
+        {
+            if (StatusViagem == Status.EmAndamento)
+            {
+                foreach(var despesa in despesas)
+                {
+                    if (despesa.TotalDespesa > 0)
+                    {
+                        TotalDespesas += despesa.TotalDespesa;
+                        _despesas.Add(despesa);
+                    }
+                }                
+            }
         }
 
         public void RemoverDespesa(int id)

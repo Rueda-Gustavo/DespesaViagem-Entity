@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DespesaViagem.Infra.Migrations
 {
     [DbContext(typeof(DespesaViagemContext))]
-    [Migration("20230409163903_create-1")]
-    partial class create1
+    [Migration("20230429213708_1-create")]
+    partial class _1create
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "8.0.0-preview.3.23174.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -28,7 +28,10 @@ namespace DespesaViagem.Infra.Migrations
             modelBuilder.Entity("DespesaViagem.Domain.Models.Core.Records.Endereco", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CEP")
                         .IsRequired()
@@ -51,13 +54,16 @@ namespace DespesaViagem.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Endereco");
+                    b.ToTable("Enderecos");
                 });
 
             modelBuilder.Entity("DespesaViagem.Domain.Models.Despesas.Despesa", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataDespesa")
                         .HasColumnType("datetime2");
@@ -65,6 +71,9 @@ namespace DespesaViagem.Infra.Migrations
                     b.Property<string>("DescricaoDespesa")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
+
+                    b.Property<int>("IdViagem")
+                        .HasColumnType("int");
 
                     b.Property<string>("NomeDespesa")
                         .IsRequired()
@@ -80,6 +89,8 @@ namespace DespesaViagem.Infra.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdViagem");
 
                     b.ToTable("Despesas");
 
@@ -136,12 +147,15 @@ namespace DespesaViagem.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Viagem", (string)null);
+                    b.ToTable("Viagens", (string)null);
                 });
 
             modelBuilder.Entity("DespesaViagem.Domain.Models.Despesas.DespesaHospedagem", b =>
                 {
                     b.HasBaseType("DespesaViagem.Domain.Models.Despesas.Despesa");
+
+                    b.Property<int>("IdEndereco")
+                        .HasColumnType("int");
 
                     b.Property<int>("QuantidadeDias")
                         .HasColumnType("integer");
@@ -149,25 +163,16 @@ namespace DespesaViagem.Infra.Migrations
                     b.Property<decimal>("ValorDiaria")
                         .HasColumnType("decimal");
 
-                    b.ToTable("DespesaHospedagem", (string)null);
-                });
+                    b.HasIndex("IdEndereco");
 
-            modelBuilder.Entity("DespesaViagem.Domain.Models.Core.Records.Endereco", b =>
-                {
-                    b.HasOne("DespesaViagem.Domain.Models.Despesas.DespesaHospedagem", "DespesaHospedagem")
-                        .WithOne("Endereco")
-                        .HasForeignKey("DespesaViagem.Domain.Models.Core.Records.Endereco", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DespesaHospedagem");
+                    b.ToTable("DespesasHospedagem", (string)null);
                 });
 
             modelBuilder.Entity("DespesaViagem.Domain.Models.Despesas.Despesa", b =>
                 {
                     b.HasOne("DespesaViagem.Domain.Models.Viagens.Viagem", "Viagem")
-                        .WithMany()
-                        .HasForeignKey("Id")
+                        .WithMany("Despesas")
+                        .HasForeignKey("IdViagem")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -181,12 +186,24 @@ namespace DespesaViagem.Infra.Migrations
                         .HasForeignKey("DespesaViagem.Domain.Models.Despesas.DespesaHospedagem", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DespesaViagem.Domain.Models.Core.Records.Endereco", "Endereco")
+                        .WithMany("DespesasHospedagem")
+                        .HasForeignKey("IdEndereco")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Endereco");
                 });
 
-            modelBuilder.Entity("DespesaViagem.Domain.Models.Despesas.DespesaHospedagem", b =>
+            modelBuilder.Entity("DespesaViagem.Domain.Models.Core.Records.Endereco", b =>
                 {
-                    b.Navigation("Endereco")
-                        .IsRequired();
+                    b.Navigation("DespesasHospedagem");
+                });
+
+            modelBuilder.Entity("DespesaViagem.Domain.Models.Viagens.Viagem", b =>
+                {
+                    b.Navigation("Despesas");
                 });
 #pragma warning restore 612, 618
         }

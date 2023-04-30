@@ -9,7 +9,7 @@ namespace DespesaViagem.Infra.EntityConfiguration.RecordsTypeConfiguration
     {
         public void Configure(EntityTypeBuilder<Endereco> builder)
         {
-            builder.ToTable($"{nameof(Endereco)}");
+            builder.ToTable($"Enderecos");
             builder.HasKey(k => k.Id);
            
             builder.Property(p => p.Logradouro)
@@ -36,11 +36,12 @@ namespace DespesaViagem.Infra.EntityConfiguration.RecordsTypeConfiguration
                    .IsUnicode(false)
                    .IsRequired(true);
 
+
+            /*
             builder
                 .HasOne(despHosp => despHosp.DespesaHospedagem)
                 .WithOne(end => end.Endereco);
-
-
+            */
         }
     }
 }

@@ -17,7 +17,7 @@ namespace DespesaViagem.Infra.Database
         //public DbSet<DespesaPassagem> DespesasPassagens { get; set; }
         //public DbSet<DespesaRefeicao> DespesasRefeicoes { get; set; }
 
-        //public DbSet<Endereco> Enderecos { get; set; }
+        public DbSet<Endereco> Enderecos { get; set; }
 
         public DespesaViagemContext(DbContextOptions<DespesaViagemContext> options) : base(options) {}
         
@@ -33,9 +33,9 @@ namespace DespesaViagem.Infra.Database
 
             //modelBuilder.ApplyConfiguration(new DespesaEntityTypeConfiguration());
             //modelBuilder.ApplyConfiguration(new AgendamentoEntityTypeConfiguration());
-            //modelBuilder.ApplyConfiguration(new EnderecoEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new EnderecoEntityTypeConfiguration());
             //modelBuilder.ApplyConfiguration(new EstabelecimentoEntityTypeConfiguration());
-            //modelBuilder.ApplyConfiguration(new FuncionarioEntityTypeConfiguration());            
+            modelBuilder.ApplyConfiguration(new FuncionarioEntityTypeConfiguration());            
             //modelBuilder.ApplyConfiguration(new VeiculoEntityTypeConfiguration());
 
             //modelBuilder.ApplyConfiguration(new DespesaDeslocamentoEntityTypeConfiguration());

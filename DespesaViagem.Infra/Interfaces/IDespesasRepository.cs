@@ -6,11 +6,11 @@ namespace DespesaViagem.Infra.Interfaces
     {
         //Os métodos get irão retornar todas as despesas relacionadas apenas ao seu tipo T definido no corpo do método
         //Por exemplo: DespesaHospedagemRepository, irá retornar todas as depesas do tipo Hospedagem relacionadas a viagem especificada
-        Task<IEnumerable<T>> ObterTodosAsync(int viagemId);
+        Task<IEnumerable<T>> ObterTodosAsync(int idViagem);
         Task<T> ObterPorIdAsync(TKey id);
-        Task<IEnumerable<T>> ObterAsync(string filtro, int viagemId);
+        Task<IEnumerable<T>> ObterAsync(string filtro, int idViagem);
         Task InsertAsync(T despesa, Viagem viagem);
         Task UpdateAsync(T despesa);
-        Task DeleteAsync(TKey id);
+        Task DeleteAsync(T despesa);
     }
 }

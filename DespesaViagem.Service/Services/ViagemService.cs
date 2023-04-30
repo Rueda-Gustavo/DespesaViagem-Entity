@@ -20,23 +20,23 @@ namespace DespesaViagem.Service.Services
         {
             return Result.Success(await _viagemRepository.ObterTodosAsync());
         }
-        /*
-        public Task<Result<Viagem>> ObterViagemPorId(string id)
+
+        public async Task<Result<Viagem>> ObterViagemPorId(string id)
         {
-            
+            _ = int.TryParse(id, out int idViagem);
+
+            if (idViagem > 0)
+            {
+                Viagem viagem = await _viagemRepository.ObterPorIdAsync(idViagem);
+
+                return Result.FailureIf(viagem is null, viagem, "Não existem viagens com o filtro especificado!");
+            }            
+
+            return Result.Failure<Viagem>("Especifique um id válido!!");
         }
-        */
 
         public async Task<Result<IEnumerable<Viagem>>> ObterViagemPorFiltro(string filtro)
         {
-            _ = int.TryParse(filtro, out int id);
-
-            if(id != 0)
-            {
-                IEnumerable<Viagem> viagem = (IEnumerable<Viagem>)await _viagemRepository.ObterPorIdAsync(id);
-                return Result.FailureIf(viagem is null, viagem, "Não existem viagens com o filtro especificado!");
-            }
-
             IEnumerable<Viagem> viagens = await _viagemRepository.ObterAsync(filtro);
             return Result.FailureIf(viagens is null, viagens, "Não existem viagens com o filtro especificado!");            
         }
@@ -45,13 +45,6 @@ namespace DespesaViagem.Service.Services
         {
             return Result.Success(await _viagemRepository.ObterTodasDepesasAsync(id));
         }
-
-        /*
-        public Task<Result<IEnumerable<DespesaHospedagem>>> ObterDespesasPorNome(string nomeDespesa)
-        {
-            throw new NotImplementedException();
-        }
-        */
 
         public async Task<Result<Viagem>> AdicionarViagem(Viagem viagem)
         {

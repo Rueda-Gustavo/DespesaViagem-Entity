@@ -18,7 +18,13 @@ namespace DespesaViagem.Infra.Repositories
             => await _context.Viagens.ToListAsync();
 
         public async Task<Viagem> ObterPorIdAsync(int id)
-            => await _context.Viagens.FirstOrDefaultAsync(viagem => viagem.Id == id);
+        {
+            return await _context.Viagens
+                .FirstOrDefaultAsync(viagem => viagem.Id == id);
+            
+            //    .Where(viagem => viagem.Id == id)
+            //    .ToListAsync();
+        }
 
         public async Task<IEnumerable<Viagem>> ObterAsync(string filtro)
         {

@@ -7,7 +7,7 @@ namespace DespesaViagem.Service.Interfaces
     public interface IViagemService
     {
         Task<Result<IEnumerable<Viagem>>> ObterTodasViagens();
-        //Task<Result<Viagem>> ObterViagemPorId(string id);
+        Task<Result<Viagem>> ObterViagemPorId(string id);
         Task<Result<IEnumerable<Viagem>>> ObterViagemPorFiltro(string filtro);        
         Task<Result<IEnumerable<Despesa>>> ObterTodasDespesas(int id);
         Task<Result<Viagem>> AdicionarViagem(Viagem viagem);

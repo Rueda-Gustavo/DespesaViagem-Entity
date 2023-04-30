@@ -8,7 +8,7 @@ namespace DespesaViagem.Infra.EntityConfiguration.Despesas
     {
         public void Configure(EntityTypeBuilder<DespesaHospedagem> builder)
         {
-            builder.ToTable($"{nameof(DespesaHospedagem)}");
+            builder.ToTable($"DespesasHospedagem");
             /*builder.HasKey(k => k.Id);
 
             builder.Property(p => p.NomeDespesa)
@@ -42,11 +42,12 @@ namespace DespesaViagem.Infra.EntityConfiguration.Despesas
                    .Property(p => p.TipoDespesa)
                    .HasMaxLength(20)
                    .IsUnicode(false)
-                   .IsRequired(true); ;
+                   .IsRequired(true);
 
             builder
-                .HasOne(end => end.Endereco)
-                .WithOne(despHosp => despHosp.DespesaHospedagem);
+                    .HasOne(e => e.Endereco)
+                    .WithMany(d => d.DespesasHospedagem)
+                    .HasForeignKey(d => d.IdEndereco);
 
             /*
             builder

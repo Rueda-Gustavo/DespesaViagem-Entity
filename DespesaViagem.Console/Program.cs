@@ -90,9 +90,9 @@ namespace DespesaViagem
             //Testando consulta
             ViagemService vs = new ViagemService(vr);
 
-            Task<Result<IEnumerable<Viagem>>> a = vs.ObterTodasViagens();
-            a.Wait();
-            var b = a.Result;
+            //Task<Result<IEnumerable<Viagem>>> a = vs.ObterTodasViagens();
+            //a.Wait();
+            //var b = a.Result;
             /*Task<IEnumerable<Viagem>> consulta = vr.ObterAsync("2");
             consulta.Wait();         
             

@@ -13,11 +13,11 @@ namespace DespesaViagem.Infra.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<DespesaHospedagem>> ObterTodosAsync(int viagemId)
+        public async Task<IEnumerable<DespesaHospedagem>> ObterTodosAsync(int idViagem)
         {
             return await _context.DespesasHospedagens
-                .Where(despesa => despesa.Viagem.Id == viagemId)
-                .Include(endereco => endereco.Endereco)
+                .Where(despesa => despesa.IdViagem == idViagem)
+                .Include(endereco => endereco.Endereco)                
                 .ToListAsync();
         }
 
@@ -26,17 +26,14 @@ namespace DespesaViagem.Infra.Repositories
                 .Include(endereco => endereco.Endereco)
                 .FirstOrDefaultAsync(despesa => despesa.Id == id);
 
-        public async Task<IEnumerable<DespesaHospedagem>> ObterAsync(string filtro, int viagemId)
-        {
-            //_ = int.TryParse(filtro, out int id);
-
+        public async Task<IEnumerable<DespesaHospedagem>> ObterAsync(string filtro, int idViagem)
+        {            
             return await _context.DespesasHospedagens
                 .Where(despesa =>
-                (//despesa.Id == id ||
-                 despesa.NomeDespesa.Contains(filtro) ||
+                 (despesa.NomeDespesa.Contains(filtro) ||
                  despesa.DescricaoDespesa.Contains(filtro)) &&
-                 despesa.Viagem.Id == viagemId)
-                .Include(endereco => endereco.Endereco)
+                 despesa.Viagem.Id == idViagem)
+                 .Include(endereco => endereco.Endereco)
                 .ToListAsync();
         }
         public async Task InsertAsync(DespesaHospedagem despesa, Viagem viagem)
@@ -52,9 +49,8 @@ namespace DespesaViagem.Infra.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
-        {
-            var despesa = ObterPorIdAsync(id);
+        public async Task DeleteAsync(DespesaHospedagem despesa)
+        {            
             _context.Remove(despesa);
             await _context.SaveChangesAsync();
         }

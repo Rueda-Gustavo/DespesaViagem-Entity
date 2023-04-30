@@ -8,7 +8,7 @@ namespace DespesaViagem.Infra.EntityConfiguration.Viagens
     {
         public void Configure(EntityTypeBuilder<Viagem> builder)
         {
-            builder.ToTable($"{nameof(Viagem)}");
+            builder.ToTable($"Viagens");
             builder.HasKey(k => k.Id);
 
             builder.Property(p => p.NomeViagem)
@@ -39,11 +39,16 @@ namespace DespesaViagem.Infra.EntityConfiguration.Viagens
 
             builder.Ignore(p => p.Despesas);
 
-            /*
             builder
-                .HasMany(despHosp => despHosp.DespesaHospedagem)
-                .WithOne(v => v.Viagem);
-            
+                .HasMany(d => d.Despesas)
+                .WithOne(v => v.Viagem)
+                .HasForeignKey(d => d.IdViagem);
+
+            builder
+                .HasOne(f => f.Funcionario)
+                .WithMany(v => v.Viagens)
+                .HasForeignKey(f => f.IdFuncionario);
+            /*
             builder
                 .HasMany(despDesl => despDesl.DespesaDeslocamento)
                 .WithOne(v => v.Viagem);            
