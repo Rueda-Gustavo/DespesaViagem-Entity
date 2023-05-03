@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using DespesaViagem.Domain.Models.Core.Records;
 using DespesaViagem.Domain.Models.Despesas;
 using DespesaViagem.Domain.Models.Viagens;
 using DespesaViagem.Infra.Interfaces;
@@ -18,10 +19,10 @@ namespace DespesaViagem.Service.Services
         
         public async Task<Result<IEnumerable<DespesaHospedagem>>> ObterTodasDespesas(int idViagem)
         {            
-            var viagem = _viagemService.ObterViagemPorId(idViagem.ToString());
+            Task<Result<Viagem>> viagem = _viagemService.ObterViagemPorId(idViagem.ToString());
             viagem.Wait();
             idViagem = viagem.Result.Value.Id;
-            var despesa = await _despesaRepository.ObterTodosAsync(idViagem);
+            IEnumerable<DespesaHospedagem> despesa = await _despesaRepository.ObterTodosAsync(idViagem);
             return Result.FailureIf(despesa is null, despesa, "Não existem despesas para a viagem informada!!");
         }        
 
@@ -31,17 +32,24 @@ namespace DespesaViagem.Service.Services
 
             if (idDespesa > 0)
             {
-                var despesa = await _despesaRepository.ObterPorIdAsync(idDespesa);
+                DespesaHospedagem despesa = await _despesaRepository.ObterPorIdAsync(idDespesa);
                 return Result.FailureIf(despesa is null, despesa, "Essa despesa não foi encontrada ou não existe!");
             }
 
             return Result.Failure<DespesaHospedagem>("Especifique um id válido!!");
         }
 
-        public async Task<Result<IEnumerable<DespesaHospedagem>>> ObterDespesasPorFiltro(string filtro, int idViagem)
-        {                        
-            var despesas = await _despesaRepository.ObterAsync(filtro, idViagem);
-            return Result.FailureIf(despesas is null, despesas, "Essas despesas não foram encontradas ou não existem!");
+        public async Task<Result<IEnumerable<DespesaHospedagem>>> ObterDespesasPorFiltro(string filtro, string idViagem)
+        {
+            _ = int.TryParse(idViagem, out int id);
+
+            if (id > 0)
+            {
+                IEnumerable<DespesaHospedagem> despesas = await _despesaRepository.ObterAsync(filtro, id);
+                return Result.FailureIf(despesas is null, despesas, "Essas despesas não foram encontradas ou não existem!");
+            }
+
+            return Result.Failure<IEnumerable<DespesaHospedagem>>("Especifique um id válido para a viagem.");
         }
 
         public async Task<Result<DespesaHospedagem>> AdicionarDespesa(DespesaHospedagem despesa, Viagem viagem)
@@ -65,12 +73,11 @@ namespace DespesaViagem.Service.Services
         public async Task<Result<DespesaHospedagem>> RemoverViagem(int id)
         {
             DespesaHospedagem despesa = await _despesaRepository.ObterPorIdAsync(id);
-            if (!await DespesaJaExiste(id))
+            if (despesa is null)
                 return Result.Failure<DespesaHospedagem>("Despesa não encontrada!");
 
             await _despesaRepository.DeleteAsync(despesa);
             return Result.Success(despesa); 
-
         }
 
         private async Task<bool> DespesaJaExiste(int id)

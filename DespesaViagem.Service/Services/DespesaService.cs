@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using DespesaViagem.Domain.Models.Despesas;
+using DespesaViagem.Domain.Models.Viagens;
 using DespesaViagem.Infra.Interfaces;
 using DespesaViagem.Service.Interfaces;
 using System;
@@ -23,10 +24,10 @@ namespace DespesaViagem.Service.Services
 
         public async Task<Result<IEnumerable<Despesa>>> ObterTodasDespesas(int idViagem)
         {
-            var viagem = _viagemService.ObterViagemPorId(idViagem.ToString());
+            Task<Result<Viagem>> viagem = _viagemService.ObterViagemPorId(idViagem.ToString());
             viagem.Wait();
             idViagem = viagem.Result.Value.Id;
-            var despesa = await _despesaRepository.ObterTodosAsync(idViagem);
+            IEnumerable<Despesa> despesa = await _despesaRepository.ObterTodosAsync(idViagem);
             return Result.FailureIf(despesa is null, despesa, "Não existem despesas para a viagem informada!!");
         }
 
@@ -36,7 +37,7 @@ namespace DespesaViagem.Service.Services
 
             if (idDespesa > 0)
             {
-                var despesa = await _despesaRepository.ObterPorIdAsync(idDespesa);
+                Despesa despesa = await _despesaRepository.ObterPorIdAsync(idDespesa);
                 return Result.FailureIf(despesa is null, despesa, "Essa despesa não foi encontrada ou não existe!");
             }
 
@@ -45,7 +46,7 @@ namespace DespesaViagem.Service.Services
 
         public async Task<Result<IEnumerable<Despesa>>> ObterDespesasPorFiltro(string filtro, int idViagem)
         {
-            var despesas = await _despesaRepository.ObterAsync(filtro, idViagem);
+            IEnumerable<Despesa> despesas = await _despesaRepository.ObterAsync(filtro, idViagem);
             return Result.FailureIf(despesas is null, despesas, "Essas despesas não foram encontradas ou não existem!");
         }      
     }

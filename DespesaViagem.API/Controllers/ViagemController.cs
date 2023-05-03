@@ -16,14 +16,16 @@ namespace DespesaViagem.API.Controllers
     {
         private readonly IViagemService _viagemService;
         private readonly IDespesaService _despesaService;
+        private readonly IFuncionarioService _funcionarioService;
 
-        public ViagemController(IViagemService viagemService, IDespesaService despesaService)
+        public ViagemController(IViagemService viagemService, IDespesaService despesaService, IFuncionarioService funcionarioService)
         {
             _viagemService = viagemService;
             _despesaService = despesaService;
+            _funcionarioService = funcionarioService;
         }
 
-        [HttpGet("Listar")]
+        [HttpGet]
         public async Task<ActionResult> ObterTodasViagens()
         {
             Result<IEnumerable<Viagem>> result = await _viagemService.ObterTodasViagens();
@@ -39,7 +41,7 @@ namespace DespesaViagem.API.Controllers
                 viagem.AdicionarDespesas(despesas.Value.ToList());
             }
 
-            var viagensDTO = viagens.ConverterViagensParaDTO();
+            IEnumerable<ViagemDTO> viagensDTO = viagens.ConverterViagensParaDTO();
 
             return Ok(viagensDTO);
         }
@@ -90,20 +92,93 @@ namespace DespesaViagem.API.Controllers
             return Ok(despesas);
         }
 
-        [HttpPost("Nova viagem")]
-        public async Task<ActionResult> InserirViagem(ViagemDTO viagemDTO)
+        [HttpGet("GetViagemAberta")]
+        public async Task<ActionResult> ObterViagemAberta()
         {
+            Result<Viagem> result = await _viagemService.ObterViagemAberta();
 
-            Viagem viagem = new Viagem(viagemDTO.NomeViagem, viagemDTO.DescricaoViagem, viagemDTO.Adiantamento, viagemDTO.DataInicial, viagemDTO.DataFinal,
-                new Funcionario { Nome = viagemDTO.NomeViagem, Sobrenome = viagemDTO.SobrenomeFuncionario, CPF = viagemDTO.CPF_Funcionario, Matricula = viagemDTO.MatriculaFuncionario });            
-
-            Result<Viagem> result = await _viagemService.AdicionarViagem(viagem);
             if (result.IsFailure)
                 return BadRequest(result);
 
-            return Ok(result.Value);
+            ViagemDTO viagemDTO = result.Value.ConverterViagemParaDTO();
+
+            return Ok(viagemDTO);
         }
 
+        [HttpGet]
+        [Route("GetViagemEmAndamento")]
+        public async Task<ActionResult> ObterViagemEmAndamento()
+        {
+            Result<Viagem> result = await _viagemService.ObterViagemEmAndamento();
 
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            ViagemDTO viagemDTO = result.Value.ConverterViagemParaDTO();
+
+            return Ok(viagemDTO);
+        }
+
+        [HttpPut("Iniciar viagem")]
+        public async Task<ActionResult> IniciarViagem()
+        {
+            Result<Viagem> result = await _viagemService.ObterViagemAberta();
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            Viagem viagem = result.Value;            
+
+            Result<Viagem> resultViagemIniciada = await _viagemService.IniciarViagem(viagem);
+
+            if (resultViagemIniciada.IsFailure)
+                return BadRequest(resultViagemIniciada);
+
+            ViagemDTO viagemDTO = resultViagemIniciada.Value.ConverterViagemParaDTO();
+
+            return Ok(viagemDTO);            
+        }
+
+        [HttpPut("Encerrar viagem")]
+        public async Task<ActionResult> EncerrarViagem()
+        {
+            Result<Viagem> result = await _viagemService.ObterViagemEmAndamento();
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            Viagem viagem = result.Value;
+
+            Result<Viagem> resultViagemIniciada = await _viagemService.EncerrarViagem(viagem);
+
+            if (resultViagemIniciada.IsFailure)
+                return BadRequest(resultViagemIniciada);
+
+            ViagemDTO viagemDTO = resultViagemIniciada.Value.ConverterViagemParaDTO();
+
+            return Ok(viagemDTO);
+        }
+
+        [HttpPost("Novo")]
+        public async Task<ActionResult> InserirViagem(ViagemDTO viagemDTO)
+        {
+            viagemDTO.StatusViagem = string.Empty;
+
+            Result<Funcionario> funcionario = (await _funcionarioService.ObterFuncionarioPorCPF(viagemDTO.CPF_Funcionario));            
+
+            if (funcionario.IsFailure)
+                return BadRequest(funcionario.ConvertFailure());
+
+            Viagem viagem = new Viagem(viagemDTO.NomeViagem, viagemDTO.DescricaoViagem, viagemDTO.Adiantamento, viagemDTO.DataInicial, viagemDTO.DataFinal, funcionario.Value);
+
+            Result<Viagem> result = await _viagemService.AdicionarViagem(viagem);
+
+            if (result.IsFailure)
+                return BadRequest(result.Value);
+
+            viagemDTO = result.Value.ConverterViagemParaDTO();
+
+            return Ok(viagemDTO);
+        }
     }
 }

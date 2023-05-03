@@ -14,6 +14,8 @@ namespace DespesaViagem.Infra
         {
             //string connectionString = configuration.GetConnectionString("SqlServer");
             service.AddDbContext<DespesaViagemContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));            
+            service.AddScoped<IEnderecoRepository, EnderecoRepository>();
+            service.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
             service.AddScoped<IViagemRepository, ViagemRepository>();
             service.AddScoped<IDespesaRepository, DespesaRepository>();
             service.AddScoped<IDespesasRepository<DespesaHospedagem, int>, DespesaHospedagemRepository>();            

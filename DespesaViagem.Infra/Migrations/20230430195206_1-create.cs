@@ -17,15 +17,31 @@ namespace DespesaViagem.Infra.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Logradouro = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NumeroCasa = table.Column<int>(type: "int", nullable: false),
-                    CEP = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Cidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Logradouro = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false),
+                    NumeroCasa = table.Column<int>(type: "integer", nullable: false),
+                    CEP = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
+                    Cidade = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false),
+                    Estado = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Enderecos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Funcionarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
+                    Sobrenome = table.Column<string>(type: "varchar(300)", unicode: false, maxLength: 300, nullable: false),
+                    CPF = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
+                    Matricula = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Funcionarios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -41,12 +57,17 @@ namespace DespesaViagem.Infra.Migrations
                     DataFinal = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalDespesas = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     StatusViagem = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
-                    NomeFuncionario = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MatriculaFuncionario = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IdFuncionario = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Viagens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Viagens_Funcionarios_IdFuncionario",
+                        column: x => x.IdFuncionario,
+                        principalTable: "Funcionarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,6 +129,17 @@ namespace DespesaViagem.Infra.Migrations
                 name: "IX_DespesasHospedagem_IdEndereco",
                 table: "DespesasHospedagem",
                 column: "IdEndereco");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Funcionarios_CPF",
+                table: "Funcionarios",
+                column: "CPF",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Viagens_IdFuncionario",
+                table: "Viagens",
+                column: "IdFuncionario");
         }
 
         /// <inheritdoc />
@@ -124,6 +156,9 @@ namespace DespesaViagem.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "Viagens");
+
+            migrationBuilder.DropTable(
+                name: "Funcionarios");
         }
     }
 }

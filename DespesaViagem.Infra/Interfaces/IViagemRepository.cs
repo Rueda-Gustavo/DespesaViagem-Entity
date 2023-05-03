@@ -11,8 +11,9 @@ namespace DespesaViagem.Infra.Interfaces
         //Diferente do método para obter todas as despesas da interface de IDespesasRepository, esse método irá retornar
         //todas as despesas referentes a viagem em questão, independente de qual tipo ela seja, Hospedagem, Passagem etc.
         Task<IEnumerable<Despesa>> ObterTodasDepesasAsync(int viagemId);
+        Task<Viagem?> ObterViagemAbertaOuEmAndamentoAsync();
         Task InsertAsync(Viagem viagem);
         Task UpdateAsync(Viagem viagem);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Viagem viagem);
     }
 }

@@ -23,11 +23,31 @@ namespace DespesaViagem.API.Mapping
                         DataFinal = viagem.DataFinal,
                         TotalDespesas = viagem.TotalDespesas,
                         StatusViagem = viagem.StatusViagem.GetDisplayName(),
-                        NomeFuncionario = viagem.Funcionario.Nome,
-                        SobrenomeFuncionario = viagem.Funcionario.Sobrenome,
+                        //NomeFuncionario = viagem.Funcionario.Nome,
+                        //SobrenomeFuncionario = viagem.Funcionario.Sobrenome,
                         CPF_Funcionario = viagem.Funcionario.CPF,
                         MatriculaFuncionario = viagem.Funcionario.Matricula
                     }).ToList();
+        }
+
+        public static ViagemDTO ConverterViagemParaDTO(
+            this Viagem viagem)
+        {
+            return new ViagemDTO
+            {
+                Id = viagem.Id,
+                NomeViagem = viagem.NomeViagem,
+                DescricaoViagem = viagem.DescricaoViagem,
+                Adiantamento = viagem.Adiantamento,
+                DataInicial = viagem.DataInicial,
+                DataFinal = viagem.DataFinal,
+                TotalDespesas = viagem.TotalDespesas,
+                StatusViagem = viagem.StatusViagem.GetDisplayName(),
+                //NomeFuncionario = viagem.Funcionario.Nome,
+                //SobrenomeFuncionario = viagem.Funcionario.Sobrenome,
+                CPF_Funcionario = viagem.Funcionario.CPF,
+                MatriculaFuncionario = viagem.Funcionario.Matricula
+            };
         }
 
         public static IEnumerable<DespesaHospedagemDTO> ConverterDespesasHospedagemParaDTO(
@@ -37,11 +57,11 @@ namespace DespesaViagem.API.Mapping
                     select new DespesaHospedagemDTO
                     {
                         Id = despesa.Id,
-                        NomeDespesa = despesa.NomeDespesa,
+                        //NomeDespesa = despesa.NomeDespesa,
                         DescricaoDespesa = despesa.DescricaoDespesa,
                         TotalDespesa = despesa.TotalDespesa,
                         DataDespesa = despesa.DataDespesa,
-                        TipoDespesa = despesa.TipoDespesa,
+                        //TipoDespesa = despesa.TipoDespesa,
                         Logradouro = despesa.Endereco.Logradouro,
                         CEP = despesa.Endereco.CEP,
                         Cidade = despesa.Endereco.Cidade,
@@ -50,6 +70,27 @@ namespace DespesaViagem.API.Mapping
                         QuantidadeDias = despesa.QuantidadeDias,
                         ValorDiaria = despesa.ValorDiaria
                     }).ToList();
+        }
+
+        public static DespesaHospedagemDTO ConverterDespesaHospedagemParaDTO(
+            this DespesaHospedagem despesa)
+        {
+            return new DespesaHospedagemDTO
+            {
+                Id = despesa.Id,
+                //NomeDespesa = despesa.NomeDespesa,
+                DescricaoDespesa = despesa.DescricaoDespesa,
+                TotalDespesa = despesa.TotalDespesa,
+                DataDespesa = despesa.DataDespesa,
+                //TipoDespesa = despesa.TipoDespesa,
+                Logradouro = despesa.Endereco.Logradouro,
+                CEP = despesa.Endereco.CEP,
+                Cidade = despesa.Endereco.Cidade,
+                Estado = despesa.Endereco.Estado,
+                NumeroCasa = despesa.Endereco.NumeroCasa,
+                QuantidadeDias = despesa.QuantidadeDias,
+                ValorDiaria = despesa.ValorDiaria
+            };
         }
     }
 }

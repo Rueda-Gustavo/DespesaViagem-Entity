@@ -1,9 +1,47 @@
 ﻿@page "/"
-
+@inject IViagemDataClient _viagemDataClient;
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
-
+<h1></h1>
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@if (viagem != null)
+{
+    <h1>@viagem.First().NomeViagem</h1>
+}
+
+
+@code {
+    public IEnumerable<ViagemDTO> viagem { get; set; }
+
+    public string MessageError { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        /*
+        try
+        {
+        viagem = await _viagemDataClient.GetViagemAberta();
+            if(viagem == null)
+            viagem = await _viagemDataClient.GetViagemEmAndamento();
+    }
+    catch (Exception ex)
+        {
+        MessageError = ex.Message;
+        }
+        */
+
+        try
+        {
+            viagem = await _viagemDataClient.GetViagens();
+        }
+        catch(Exception ex)
+        {
+            MessageError = ex.Message;
+        }
+        
+    }
+}

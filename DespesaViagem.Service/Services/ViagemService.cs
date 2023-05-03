@@ -30,7 +30,7 @@ namespace DespesaViagem.Service.Services
                 Viagem viagem = await _viagemRepository.ObterPorIdAsync(idViagem);
 
                 return Result.FailureIf(viagem is null, viagem, "Não existem viagens com o filtro especificado!");
-            }            
+            }
 
             return Result.Failure<Viagem>("Especifique um id válido!!");
         }
@@ -38,7 +38,7 @@ namespace DespesaViagem.Service.Services
         public async Task<Result<IEnumerable<Viagem>>> ObterViagemPorFiltro(string filtro)
         {
             IEnumerable<Viagem> viagens = await _viagemRepository.ObterAsync(filtro);
-            return Result.FailureIf(viagens is null, viagens, "Não existem viagens com o filtro especificado!");            
+            return Result.FailureIf(viagens is null, viagens, "Não existem viagens com o filtro especificado!");
         }
 
         public async Task<Result<IEnumerable<Despesa>>> ObterTodasDespesas(int id)
@@ -46,9 +46,28 @@ namespace DespesaViagem.Service.Services
             return Result.Success(await _viagemRepository.ObterTodasDepesasAsync(id));
         }
 
+        public async Task<Result<Viagem>> ObterViagemEmAndamento()
+        {
+            Viagem viagem = await _viagemRepository.ObterViagemAbertaOuEmAndamentoAsync();
+            
+            if (viagem.StatusViagem == Status.EmAndamento)
+                return viagem;
+
+            return Result.Failure<Viagem>("Não existe uma viagem em andamento.");
+        }
+        public async Task<Result<Viagem>> ObterViagemAberta()
+        {
+            Viagem viagem = await _viagemRepository.ObterViagemAbertaOuEmAndamentoAsync();
+
+            if (viagem.StatusViagem == Status.Aberta)
+                return viagem;
+
+            return Result.Failure<Viagem>("Não existe uma viagem aberta.");
+        }
+
         public async Task<Result<Viagem>> AdicionarViagem(Viagem viagem)
         {
-            if (await ViagemEmAndamento(viagem.Id))
+            if (await ViagemEmAndamento() || await ViagemAberta())
                 return Result.Failure<Viagem>("Já existe uma viagem aberta ou em andamento.");
             await _viagemRepository.InsertAsync(viagem);
             return Result.Success(viagem);
@@ -56,15 +75,14 @@ namespace DespesaViagem.Service.Services
 
         public async Task<Result<Viagem>> AlterarViagem(Viagem viagem)
         {
-            if (!await ViagemEmAndamento(viagem.Id))
+            if (!await ViagemAberta())
                 return Result.Failure<Viagem>("Nenhuma viagem em aberto.");
 
-            if((await _viagemRepository.ObterPorIdAsync(viagem.Id)).StatusViagem == Status.EmAndamento)
+            if ((await _viagemRepository.ObterPorIdAsync(viagem.Id)).StatusViagem == Status.EmAndamento)
                 return Result.Failure<Viagem>("A viagem já está em andamento, não é possível alterar os dados.");
 
             await _viagemRepository.UpdateAsync(viagem);
             return Result.Success(viagem);
-
         }
 
         public async Task<Result<Viagem>> RemoverViagem(int id)
@@ -73,10 +91,9 @@ namespace DespesaViagem.Service.Services
 
             if (viagem is null)
                 return Result.Failure<Viagem>("Viagem não existe!");
-            await _viagemRepository.DeleteAsync(id);
+            await _viagemRepository.DeleteAsync(viagem);
             return Result.Success(viagem);
-
-        }       
+        }
 
         public async Task<Result<decimal>> ObterPrestacaoDeContas(Viagem viagem)
         {
@@ -85,13 +102,24 @@ namespace DespesaViagem.Service.Services
 
         public async Task<Result<Viagem>> IniciarViagem(Viagem viagem)
         {
-            if (await ViagemEmAndamento(viagem.Id))
+            if (await ViagemEmAndamento())
             {
                 return Result.Failure<Viagem>("Já existe uma viagem aberta ou em andamento.");
             }
             viagem.IniciarViagem();
             await _viagemRepository.UpdateAsync(viagem);
-            return Result.Success(viagem); 
+            return Result.Success(viagem);
+        }
+
+        public async Task<Result<Viagem>> EncerrarViagem(Viagem viagem)
+        {
+            if (!await ViagemEmAndamento())
+            {
+                return Result.Failure<Viagem>("A viagem deve estar em andamento para ser encerrada.");
+            }
+            viagem.EncerrarViagem();
+            await _viagemRepository.UpdateAsync(viagem);
+            return Result.Success(viagem);
         }
 
         public async Task<Result<Viagem>> CancelarViagem(Viagem viagem)
@@ -105,31 +133,48 @@ namespace DespesaViagem.Service.Services
             return Result.Success(viagem);
         }
 
+
+
         //Verifica se já existe alguma viagem em andamento, caso não existe pode prosseguir com a criação.
-        private async Task<bool> ViagemEmAndamento(int viagemId)
+        private async Task<bool> ViagemEmAndamento()
         {
-            IEnumerable<Viagem> viagens = await _viagemRepository.ObterTodosAsync();
-            foreach (var viagem in viagens)
+            Viagem viagem = await _viagemRepository.ObterViagemAbertaOuEmAndamentoAsync();
+            if (viagem is null)
+                return false;
+
+            if (viagem.StatusViagem == Status.EmAndamento)
             {
-                if (viagem.StatusViagem == Status.EmAndamento || viagem.StatusViagem == Status.Aberta)
-                {
-                    return true;
-                }
+                return true;
             }
+
             return false;
         }
 
-        private async Task<bool> ViagemCancelada(int viagemId)
+        private async Task<bool> ViagemAberta()
         {
-            IEnumerable<Viagem> viagens = await _viagemRepository.ObterTodosAsync();
-            foreach (var viagem in viagens)
+            Viagem viagem = await _viagemRepository.ObterViagemAbertaOuEmAndamentoAsync();
+            if (viagem is null)
+                return false;
+
+            if (viagem.StatusViagem == Status.Aberta)
             {
-                if (viagem.StatusViagem == Status.Cancelada)
-                {
-                    return true;
-                }
+                return true;
             }
+
             return false;
-        }        
+        }
+
+        private async Task<bool> ViagemCancelada(int idViagem)
+        {
+            Viagem viagem = await _viagemRepository.ObterPorIdAsync(idViagem);
+            //foreach (var viagem in viagens)
+            //{
+            if (viagem.StatusViagem == Status.Cancelada)
+            {
+                return true;
+            }
+            //}
+            return false;
+        }
     }
 }

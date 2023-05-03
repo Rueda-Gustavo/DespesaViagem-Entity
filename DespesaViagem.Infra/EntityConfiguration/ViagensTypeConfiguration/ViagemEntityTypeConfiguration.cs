@@ -47,29 +47,7 @@ namespace DespesaViagem.Infra.EntityConfiguration.Viagens
             builder
                 .HasOne(f => f.Funcionario)
                 .WithMany(v => v.Viagens)
-                .HasForeignKey(f => f.IdFuncionario);
-            /*
-            builder
-                .HasMany(despDesl => despDesl.DespesaDeslocamento)
-                .WithOne(v => v.Viagem);            
-
-            builder
-                .HasMany(despPass => despPass.DespesaPassagem)
-                .WithOne(v => v.Viagem);
-
-            builder
-                .HasMany(despRef => despRef.DespesaRefeicao)
-                .WithOne(v => v.Viagem);
-            */
-            /*
-            builder
-                .HasOne(agend => agend.Agendamento)
-                .WithOne(v => v.Viagem);
-
-            builder
-                .HasOne(func => func.Funcionario)
-                .WithOne(v => v.Viagem);
-            */
+                .HasForeignKey(f => f.IdFuncionario);           
         }
     }
 }

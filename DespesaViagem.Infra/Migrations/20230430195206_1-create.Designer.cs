@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DespesaViagem.Infra.Migrations
 {
     [DbContext(typeof(DespesaViagemContext))]
-    [Migration("20230429213708_1-create")]
+    [Migration("20230430195206_1-create")]
     partial class _1create
     {
         /// <inheritdoc />
@@ -35,26 +35,74 @@ namespace DespesaViagem.Infra.Migrations
 
                     b.Property<string>("CEP")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Cidade")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(30)");
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Logradouro")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<int>("NumeroCasa")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Enderecos");
+                    b.ToTable("Enderecos", (string)null);
+                });
+
+            modelBuilder.Entity("DespesaViagem.Domain.Models.Core.Records.Funcionario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CPF")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)");
+
+                    b.Property<string>("Matricula")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Sobrenome")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(300)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CPF")
+                        .IsUnique();
+
+                    b.ToTable("Funcionarios", (string)null);
                 });
 
             modelBuilder.Entity("DespesaViagem.Domain.Models.Despesas.Despesa", b =>
@@ -121,13 +169,8 @@ namespace DespesaViagem.Infra.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(60)");
 
-                    b.Property<string>("MatriculaFuncionario")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NomeFuncionario")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdFuncionario")
+                        .HasColumnType("int");
 
                     b.Property<string>("NomeViagem")
                         .IsRequired()
@@ -146,6 +189,8 @@ namespace DespesaViagem.Infra.Migrations
                         .HasColumnType("decimal");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdFuncionario");
 
                     b.ToTable("Viagens", (string)null);
                 });
@@ -179,6 +224,17 @@ namespace DespesaViagem.Infra.Migrations
                     b.Navigation("Viagem");
                 });
 
+            modelBuilder.Entity("DespesaViagem.Domain.Models.Viagens.Viagem", b =>
+                {
+                    b.HasOne("DespesaViagem.Domain.Models.Core.Records.Funcionario", "Funcionario")
+                        .WithMany("Viagens")
+                        .HasForeignKey("IdFuncionario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Funcionario");
+                });
+
             modelBuilder.Entity("DespesaViagem.Domain.Models.Despesas.DespesaHospedagem", b =>
                 {
                     b.HasOne("DespesaViagem.Domain.Models.Despesas.Despesa", null)
@@ -199,6 +255,11 @@ namespace DespesaViagem.Infra.Migrations
             modelBuilder.Entity("DespesaViagem.Domain.Models.Core.Records.Endereco", b =>
                 {
                     b.Navigation("DespesasHospedagem");
+                });
+
+            modelBuilder.Entity("DespesaViagem.Domain.Models.Core.Records.Funcionario", b =>
+                {
+                    b.Navigation("Viagens");
                 });
 
             modelBuilder.Entity("DespesaViagem.Domain.Models.Viagens.Viagem", b =>

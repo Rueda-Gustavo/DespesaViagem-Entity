@@ -96,6 +96,9 @@ namespace DespesaViagem.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CPF")
+                        .IsUnique();
+
                     b.ToTable("Funcionarios", (string)null);
                 });
 

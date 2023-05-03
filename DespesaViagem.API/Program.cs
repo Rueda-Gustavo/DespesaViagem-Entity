@@ -1,9 +1,6 @@
 using DespesaViagem.Infra;
 using DespesaViagem.Service;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Annotations;
-using System.Security.Cryptography.Xml;
-using System.Text.Json;
+using Microsoft.Net.Http.Headers;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +29,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(policy => policy
+    .AllowAnyOrigin()
+    //.WithOrigins("https://localhost:7175/", "http://localhost:7175/")
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .WithHeaders(HeaderNames.ContentType)
+);
 
 app.UseHttpsRedirection();
 

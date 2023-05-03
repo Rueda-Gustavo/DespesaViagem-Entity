@@ -1,6 +1,7 @@
 ﻿using DespesaViagem.Domain.Models.Core.Records;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace DespesaViagem.Infra.EntityConfiguration.RecordsTypeConfiguration
 {
@@ -10,7 +11,7 @@ namespace DespesaViagem.Infra.EntityConfiguration.RecordsTypeConfiguration
         {
             builder.ToTable($"{nameof(Funcionario)}s");
             builder.HasKey(k => k.Id);
-
+            
             builder.Property(p => p.Nome)
                    .HasMaxLength(20)
                    .IsUnicode(false)
@@ -21,15 +22,18 @@ namespace DespesaViagem.Infra.EntityConfiguration.RecordsTypeConfiguration
                     .IsUnicode(false)
                     .IsRequired(true);
 
-            builder.Property(p => p.CPF)
+            builder.Property(p => p.CPF)                   
                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .IsRequired(true);
-
+                   .IsUnicode(false)
+                   .IsRequired(true);                        
+            
             builder.Property(p => p.Matricula)
                    .HasMaxLength(30)
                    .IsUnicode(false)
-                   .IsRequired(true);            
+                   .IsRequired(true);
+
+            builder.HasIndex(f => f.CPF).IsUnique(true);
+            builder.HasIndex(f => f.Matricula).IsUnique(true);
         }
     }
 }

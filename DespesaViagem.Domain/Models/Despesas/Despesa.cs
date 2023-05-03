@@ -19,9 +19,9 @@ namespace DespesaViagem.Domain.Models.Despesas
         public int IdViagem { get; protected set; }
         public Viagem Viagem { get; set; }
 
-        public Despesa(int id, string nomeDespesa, string descricaoDespesa, decimal totalDespesa, string tipoDespesa, int idViagem)
+        public Despesa(/*int id,*/ string nomeDespesa, string descricaoDespesa, decimal totalDespesa, string tipoDespesa, int idViagem)
         {            
-            Id = id;
+            //Id = id;
             NomeDespesa = nomeDespesa;
             DescricaoDespesa = descricaoDespesa;
             TotalDespesa = totalDespesa;

@@ -2,6 +2,6 @@
 {
     public enum Status
     {
-        Aberta, EmAndamento, Fechada, Cancelada
+        Aberta, EmAndamento, Encerrada, Cancelada
     }
 }

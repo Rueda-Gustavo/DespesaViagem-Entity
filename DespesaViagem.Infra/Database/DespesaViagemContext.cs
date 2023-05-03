@@ -18,13 +18,13 @@ namespace DespesaViagem.Infra.Database
         //public DbSet<DespesaRefeicao> DespesasRefeicoes { get; set; }
 
         public DbSet<Endereco> Enderecos { get; set; }
+        public DbSet<Funcionario> Funcionarios { get; set; }
 
         public DespesaViagemContext(DbContextOptions<DespesaViagemContext> options) : base(options) {}
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            
+        {    
             modelBuilder.Entity<Despesa>().HasKey(k => k.Id);
 
             modelBuilder.Entity<DespesaHospedagem>()

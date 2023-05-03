@@ -1,7 +1,9 @@
-﻿select * from Viagem;
+﻿select * from Enderecos;
+select * from Funcionarios;
+select * from Viagens;
 select * from Despesas;
-select * from DespesaHospedagem;
-select * from Endereco;
+select * from DespesasHospedagem;
+select * from Enderecos;
 
 delete from viagem;
 delete from despesas;

@@ -100,13 +100,13 @@ namespace DespesaViagem.Domain.Models.Viagens
 
         public decimal GerarPrestacaoDeContas()
         {
-            StatusViagem = Status.Fechada;
+            StatusViagem = Status.Encerrada;
             return TotalDespesas - Adiantamento;
         }
 
         public void IniciarViagem()
         {
-            if (StatusViagem == Status.Fechada || StatusViagem == Status.EmAndamento)
+            if (StatusViagem == Status.Encerrada || StatusViagem == Status.EmAndamento || StatusViagem == Status.Cancelada)
                 throw new Exception("Viagem já foi fechada ou já está em andamento!");
             StatusViagem = Status.EmAndamento;
         }
@@ -114,6 +114,15 @@ namespace DespesaViagem.Domain.Models.Viagens
         public void CancelarViagem()
         {
             StatusViagem = Status.Cancelada;
+        }
+
+        public void EncerrarViagem()
+        {
+            if(StatusViagem != Status.EmAndamento)
+                throw new Exception("Viagem a viagem deve estar em andamento para ser encerrada!");
+            StatusViagem = Status.Encerrada;
+
+
         }
 
         private Despesa? BuscarDespesa(int id)
