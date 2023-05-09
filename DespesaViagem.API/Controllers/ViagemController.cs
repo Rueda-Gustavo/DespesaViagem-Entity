@@ -135,7 +135,7 @@ namespace DespesaViagem.API.Controllers
             Result<Viagem> result = await _viagemService.ObterViagemAberta();
 
             if (result.IsFailure)
-                return BadRequest(result);
+                return BadRequest(result);            
 
             Viagem viagem = result.Value;            
 

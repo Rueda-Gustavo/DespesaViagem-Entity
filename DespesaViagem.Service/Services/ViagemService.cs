@@ -50,16 +50,16 @@ namespace DespesaViagem.Service.Services
         {
             Viagem viagem = await _viagemRepository.ObterViagemAbertaOuEmAndamentoAsync();
             
-            if (viagem.StatusViagem == Status.EmAndamento)
+            if (viagem is not null && viagem.StatusViagem == Status.EmAndamento)
                 return viagem;
 
             return Result.Failure<Viagem>("Não existe uma viagem em andamento.");
         }
         public async Task<Result<Viagem>> ObterViagemAberta()
         {
-            Viagem viagem = await _viagemRepository.ObterViagemAbertaOuEmAndamentoAsync();
+            Viagem viagem = await _viagemRepository.ObterViagemAbertaOuEmAndamentoAsync();            
 
-            if (viagem.StatusViagem == Status.Aberta)
+            if (viagem is not null && viagem.StatusViagem == Status.Aberta )
                 return viagem;
 
             return Result.Failure<Viagem>("Não existe uma viagem aberta.");

@@ -30,6 +30,7 @@ namespace DespesaViagem.Domain.Models.Viagens
             NomeViagem = nomeViagem;
             DescricaoViagem = descricaoViagem;
             Adiantamento = adiantamento;
+            DataInicial = dataInicial;
             DataFinal = dataFinal;
             Adiantamento = adiantamento;
             TotalDespesas = 0;
@@ -38,7 +39,6 @@ namespace DespesaViagem.Domain.Models.Viagens
         }
 
         public Viagem() { }
-
 
         public void AdicionarDespesa(Despesa despesa)
         {

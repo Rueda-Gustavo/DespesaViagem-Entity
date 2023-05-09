@@ -20,11 +20,10 @@ Welcome to your new app.
 
     public IEnumerable<ViagemDTO> ViagensDTO { get; set; }
 
-    public string MessageError { get; set; }
-
     public IEnumerable<Tuple<ViagemDTO, FuncionarioDTO>> ViagensComFuncionarios { get; set; }
 
-
+    public string MessageError { get; set; }
+       
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,7 +63,6 @@ Welcome to your new app.
         {
             MessageError = ex.Message;
         }
-
         return default;
     }
 }
