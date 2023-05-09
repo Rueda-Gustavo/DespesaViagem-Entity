@@ -1,4 +1,5 @@
 ﻿using DespesaViagem.Domain.DTOs.Despesas;
+using DespesaViagem.Domain.DTOs.Records;
 using DespesaViagem.Domain.DTOs.Viagens;
 using DespesaViagem.Domain.Models.Core.Records;
 using DespesaViagem.Domain.Models.Despesas;
@@ -26,7 +27,7 @@ namespace DespesaViagem.API.Mapping
                         //NomeFuncionario = viagem.Funcionario.Nome,
                         //SobrenomeFuncionario = viagem.Funcionario.Sobrenome,
                         CPF_Funcionario = viagem.Funcionario.CPF,
-                        MatriculaFuncionario = viagem.Funcionario.Matricula
+                        //MatriculaFuncionario = viagem.Funcionario.Matricula
                     }).ToList();
         }
 
@@ -42,11 +43,8 @@ namespace DespesaViagem.API.Mapping
                 DataInicial = viagem.DataInicial,
                 DataFinal = viagem.DataFinal,
                 TotalDespesas = viagem.TotalDespesas,
-                StatusViagem = viagem.StatusViagem.GetDisplayName(),
-                //NomeFuncionario = viagem.Funcionario.Nome,
-                //SobrenomeFuncionario = viagem.Funcionario.Sobrenome,
-                CPF_Funcionario = viagem.Funcionario.CPF,
-                MatriculaFuncionario = viagem.Funcionario.Matricula
+                StatusViagem = viagem.StatusViagem.GetDisplayName(),                
+                CPF_Funcionario = viagem.Funcionario.CPF,                
             };
         }
 
@@ -56,12 +54,10 @@ namespace DespesaViagem.API.Mapping
             return (from despesa in despesas
                     select new DespesaHospedagemDTO
                     {
-                        Id = despesa.Id,
-                        //NomeDespesa = despesa.NomeDespesa,
+                        Id = despesa.Id,                        
                         DescricaoDespesa = despesa.DescricaoDespesa,
                         TotalDespesa = despesa.TotalDespesa,
-                        DataDespesa = despesa.DataDespesa,
-                        //TipoDespesa = despesa.TipoDespesa,
+                        DataDespesa = despesa.DataDespesa,                        
                         Logradouro = despesa.Endereco.Logradouro,
                         CEP = despesa.Endereco.CEP,
                         Cidade = despesa.Endereco.Cidade,
@@ -78,11 +74,9 @@ namespace DespesaViagem.API.Mapping
             return new DespesaHospedagemDTO
             {
                 Id = despesa.Id,
-                //NomeDespesa = despesa.NomeDespesa,
                 DescricaoDespesa = despesa.DescricaoDespesa,
                 TotalDespesa = despesa.TotalDespesa,
                 DataDespesa = despesa.DataDespesa,
-                //TipoDespesa = despesa.TipoDespesa,
                 Logradouro = despesa.Endereco.Logradouro,
                 CEP = despesa.Endereco.CEP,
                 Cidade = despesa.Endereco.Cidade,
@@ -91,6 +85,32 @@ namespace DespesaViagem.API.Mapping
                 QuantidadeDias = despesa.QuantidadeDias,
                 ValorDiaria = despesa.ValorDiaria
             };
+        }
+
+        public static FuncionarioDTO ConverterFuncionarioParaDTO(this Funcionario funcionario)
+        {
+            return new FuncionarioDTO
+            {
+                Id = funcionario.Id,
+                Nome = funcionario.Nome,
+                Sobrenome = funcionario.Sobrenome,
+                CPF = funcionario.CPF,
+                Matricula = funcionario.Matricula
+            };
+        }
+
+        public static IEnumerable<FuncionarioDTO> ConverterFuncionariosParaDTO(
+            this IEnumerable<Funcionario> funcionarios)
+        {
+            return (from funcionario in funcionarios
+                    select new FuncionarioDTO
+                    {
+                        Id = funcionario.Id,
+                        Nome = funcionario.Nome,
+                        Sobrenome = funcionario.Sobrenome,
+                        CPF = funcionario.CPF,
+                        Matricula = funcionario.Matricula
+                    }).ToList();
         }
     }
 }

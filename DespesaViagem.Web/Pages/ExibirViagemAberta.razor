@@ -1,0 +1,31 @@
+﻿@if (Viagem.StatusViagem == Status.Aberta.ToString())
+    CorStatus = "dark";
+else
+    CorStatus = "danger";
+<div class="card border-@CorStatus mb-3" style="max-width: 18rem;">
+    <div class="card-header">@Viagem.NomeViagem</div>
+    <div class="card-body text-@CorStatus">
+        <h5 class="card-title">@Viagem.DescricaoViagem @Viagem.StatusViagem</h5>
+        <p class="card-text">Informações sobre a viagem: </p>
+        <p class="card-text">Período da viagem: @Viagem.DataInicial.Date.GetDateTimeFormats() - @Viagem.DataFinal.Date.GetDateTimeFormats()</p>
+        <p class="card-text">Adiantamento incial: @Viagem.Adiantamento</p>
+        <p class="card-text">Informações sobre o funcionário:</p>
+        <p class="card-text">Nomes: @Funcionario.Nome @Funcionario.Sobrenome</p>
+        <p class="card-text">Matrícula: @Funcionario.Matricula</p>
+        <p class="card-text">Matrícula: @Funcionario.CPF</p>
+
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public ViagemDTO Viagem { get; set; }
+
+    [Parameter]
+    public FuncionarioDTO Funcionario { get; set; }
+
+    private string CorStatus { get; set; }
+
+}

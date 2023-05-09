@@ -1,8 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using DespesaViagem.Domain.Models.Core.Records;
 using DespesaViagem.Service.Interfaces;
-using DespesaViagem.Service.Services;
+using DespesaViagem.API.Mapping;
 using Microsoft.AspNetCore.Mvc;
+using DespesaViagem.Domain.DTOs.Records;
 
 namespace DespesaViagem.API.Controllers
 {
@@ -30,7 +31,8 @@ namespace DespesaViagem.API.Controllers
             return Ok(funcionarios);
         }
 
-        [HttpGet("Listar por filtro")]
+        [HttpGet]
+        [Route("{filtro}/ObterFuncionarioPorFiltro")]
         public async Task<ActionResult> ObterFuncionarioPorFiltro(string filtro)
         {
             Result<IEnumerable<Funcionario>> result = await _funcionarioService.ObterFuncionarioPorFiltro(filtro);
@@ -38,11 +40,20 @@ namespace DespesaViagem.API.Controllers
             if (result.IsFailure)
                 return BadRequest(result);
 
-            return Ok(result.Value.ToList());
+            IEnumerable<Funcionario> funcionarios = result.Value.ToList();
+
+            if(funcionarios.Count() == 1)
+            {
+                FuncionarioDTO funcionarioDTO = funcionarios.First().ConverterFuncionarioParaDTO();
+                return Ok(funcionarioDTO);
+            }
+
+            IEnumerable<FuncionarioDTO> funcionariosDTO = funcionarios.ConverterFuncionariosParaDTO();
+            return Ok(funcionariosDTO);
         }
 
-        [HttpGet("Listar por id")]
-        public async Task<ActionResult> ObterFuncionarioPorId(string id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> ObterFuncionarioPorId(int id)
         {
             Result<Funcionario> result = await _funcionarioService.ObterFuncionarioPorId(id);
 

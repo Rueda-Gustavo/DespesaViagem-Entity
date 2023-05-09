@@ -1,17 +1,15 @@
 ﻿using DespesaViagem.Domain.Models.Core.Enums;
 using DespesaViagem.Domain.Models.Core.Records;
 using DespesaViagem.Domain.Models.Despesas;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DespesaViagem.Domain.Models.Viagens
 {
     public class Viagem
-    {                
+    {
         public int Id { get; }
         public string NomeViagem { get; set; }
         public string DescricaoViagem { get; set; }
         public decimal Adiantamento { get; }
-        //public Agendamento Agendamento { get; private set; }
         public DateTime DataInicial { get; private set; }
         public DateTime DataFinal { get; private set; }
         public decimal TotalDespesas { get; private set; }
@@ -22,14 +20,9 @@ namespace DespesaViagem.Domain.Models.Viagens
         }
         public Funcionario Funcionario { get; private set; }
         public int IdFuncionario { get; private set; }
-        //public string NomeFuncionario { get; private set; }
-        //public string MatriculaFuncionario { get; private set; }
-        //public List<DespesaDeslocamento> DespesaDeslocamento { get; set; }
-        //public List<DespesaHospedagem> DespesaHospedagem { get; set; }
-        //public List<DespesaPassagem> DespesaPassagem { get; set; }
-        //public List<DespesaRefeicao> DespesaRefeicao { get; set; }
 
-        private List<Despesa> _despesas = new List<Despesa>(); 
+
+        private List<Despesa> _despesas = new List<Despesa>();
 
         public Viagem(/*int id,*/string nomeViagem, string descricaoViagem, decimal adiantamento, DateTime dataInicial, DateTime dataFinal, Funcionario funcionario)
         {
@@ -39,7 +32,6 @@ namespace DespesaViagem.Domain.Models.Viagens
             Adiantamento = adiantamento;
             DataFinal = dataFinal;
             Adiantamento = adiantamento;
-            //Agendamento = agendamento;
             TotalDespesas = 0;
             StatusViagem = Status.Aberta;
             Funcionario = funcionario;
@@ -47,18 +39,6 @@ namespace DespesaViagem.Domain.Models.Viagens
 
         public Viagem() { }
 
-        public Viagem(string nomeViagem, string descricaoViagem, decimal adiantamento, DateTime dataInicial, DateTime dataFinal, string nomeFuncionario, string matriculaFuncionario)
-        {
-            NomeViagem = nomeViagem;
-            DescricaoViagem = descricaoViagem;
-            StatusViagem = Status.Aberta;
-            DataInicial = dataInicial;
-            DataFinal = dataFinal;
-            Adiantamento = adiantamento;
-            TotalDespesas = 0;
-            //NomeFuncionario = nomeFuncionario;
-            //MatriculaFuncionario = matriculaFuncionario;
-        }
 
         public void AdicionarDespesa(Despesa despesa)
         {
@@ -71,14 +51,14 @@ namespace DespesaViagem.Domain.Models.Viagens
         {
             if (StatusViagem == Status.EmAndamento)
             {
-                foreach(var despesa in despesas)
+                foreach (var despesa in despesas)
                 {
                     if (despesa.TotalDespesa > 0)
                     {
                         TotalDespesas += despesa.TotalDespesa;
                         _despesas.Add(despesa);
                     }
-                }                
+                }
             }
         }
 
@@ -93,9 +73,9 @@ namespace DespesaViagem.Domain.Models.Viagens
                     _despesas.Remove(despesa);
                     return;
                 }
-                throw new ArgumentException("A despesa não foi encontrada.");                
+                throw new ArgumentException("A despesa não foi encontrada.");
             }
-            throw new ArgumentException("Por favor, informe um id válido.");            
+            throw new ArgumentException("Por favor, informe um id válido.");
         }
 
         public decimal GerarPrestacaoDeContas()
@@ -118,18 +98,16 @@ namespace DespesaViagem.Domain.Models.Viagens
 
         public void EncerrarViagem()
         {
-            if(StatusViagem != Status.EmAndamento)
+            if (StatusViagem != Status.EmAndamento)
                 throw new Exception("Viagem a viagem deve estar em andamento para ser encerrada!");
             StatusViagem = Status.Encerrada;
-
-
         }
 
         private Despesa? BuscarDespesa(int id)
         {
-            foreach(var item in _despesas)
+            foreach (var item in _despesas)
             {
-                if(item.Id == id)
+                if (item.Id == id)
                     return item;
             }
             return default;

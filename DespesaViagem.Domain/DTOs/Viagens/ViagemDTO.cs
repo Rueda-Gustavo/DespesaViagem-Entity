@@ -10,9 +10,6 @@
         public DateTime DataFinal { get; set; }
         public decimal TotalDespesas { get; set; }
         public string? StatusViagem { get; set; }
-        //public required string NomeFuncionario { get; set; }
-        //public required string SobrenomeFuncionario { get; set; }
-        public required string CPF_Funcionario { get; set; }
-        public required string MatriculaFuncionario { get; set; }
+        public required string CPF_Funcionario { get; set; }        
     }
 }

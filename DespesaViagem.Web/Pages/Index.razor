@@ -2,46 +2,69 @@
 @inject IViagemDataClient _viagemDataClient;
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
-
 Welcome to your new app.
-<h1></h1>
+
+
 <SurveyPrompt Title="How is Blazor working for you?" />
 
-@if (viagem != null)
+@if (ViagensComFuncionarios != null)
 {
-    <h1>@viagem.First().NomeViagem</h1>
+    @foreach (var item in ViagensComFuncionarios)
+    {
+        <ExibirViagemAberta Viagem="@item.Item1" Funcionario="@item.Item2"></ExibirViagemAberta>
+    }
 }
 
 
 @code {
-    public IEnumerable<ViagemDTO> viagem { get; set; }
+
+    public IEnumerable<ViagemDTO> ViagensDTO { get; set; }
 
     public string MessageError { get; set; }
 
+    public IEnumerable<Tuple<ViagemDTO, FuncionarioDTO>> ViagensComFuncionarios { get; set; }
+
+
+
     protected override async Task OnInitializedAsync()
     {
-        /*
-        try
-        {
-        viagem = await _viagemDataClient.GetViagemAberta();
-            if(viagem == null)
-            viagem = await _viagemDataClient.GetViagemEmAndamento();
+        ViagensDTO = await GetViagensDTO();
+        ViagensComFuncionarios = await VincularViagensComFuncionarios();
     }
-    catch (Exception ex)
-        {
-        MessageError = ex.Message;
-        }
-        */
 
+    private async Task<IEnumerable<ViagemDTO>?> GetViagensDTO()
+    {
         try
         {
-            viagem = await _viagemDataClient.GetViagens();
+            return await _viagemDataClient.GetViagensDTO();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             MessageError = ex.Message;
         }
-        
+
+        return default;
+    }
+
+    private async Task<IEnumerable<Tuple<ViagemDTO, FuncionarioDTO>>> VincularViagensComFuncionarios()
+    {
+        try
+        {
+            List<Tuple<ViagemDTO, FuncionarioDTO>> viagensComFuncionarios = new();
+            FuncionarioDTO funcionarioDTO;
+            foreach (var viagemDTO in ViagensDTO)
+            {
+                funcionarioDTO = await _viagemDataClient.GetFuncionarioDTO(viagemDTO.CPF_Funcionario);
+                viagensComFuncionarios.Add(new Tuple<ViagemDTO, FuncionarioDTO>(viagemDTO, funcionarioDTO));
+            }
+
+            return viagensComFuncionarios;
+        }
+        catch (Exception ex)
+        {
+            MessageError = ex.Message;
+        }
+
+        return default;
     }
 }

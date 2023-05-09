@@ -5,7 +5,6 @@ using DespesaViagem.Domain.Models.Core.Records;
 using DespesaViagem.Domain.Models.Despesas;
 using DespesaViagem.Domain.Models.Viagens;
 using DespesaViagem.Service.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DespesaViagem.API.Controllers
@@ -26,6 +25,7 @@ namespace DespesaViagem.API.Controllers
         }
 
         [HttpGet]
+        [Route("GetViagens")]
         public async Task<ActionResult> ObterTodasViagens()
         {
             Result<IEnumerable<Viagem>> result = await _viagemService.ObterTodasViagens();
@@ -46,7 +46,7 @@ namespace DespesaViagem.API.Controllers
             return Ok(viagensDTO);
         }
 
-        [HttpGet("Listar por Id")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult> ObterViagensPorId(string id)
         {                        
             Result<Viagem> result = await _viagemService.ObterViagemPorId(id);            
@@ -61,7 +61,7 @@ namespace DespesaViagem.API.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("Listar por filtro")]
+        [HttpGet("{filtro}")]        
         public async Task<ActionResult> ObterViagensPorFiltro(string filtro)
         {
             Result<IEnumerable<Viagem>> result = await _viagemService.ObterViagemPorFiltro(filtro);
@@ -80,7 +80,8 @@ namespace DespesaViagem.API.Controllers
             return Ok(viagens);
         }
 
-        [HttpGet("Listar despesas")]
+        [HttpGet]
+        [Route("{id}/ObterDespesasViagem")]
         public async Task<ActionResult> ObterTodasDespesasDaViagem(int idViagem)
         {
             Result<IEnumerable<Despesa>> result = await _viagemService.ObterTodasDespesas(idViagem);
@@ -91,7 +92,7 @@ namespace DespesaViagem.API.Controllers
             List<Despesa> despesas = result.Value.ToList();
             return Ok(despesas);
         }
-
+        /*
         [HttpGet("GetViagemAberta")]
         public async Task<ActionResult> ObterViagemAberta()
         {
@@ -114,12 +115,21 @@ namespace DespesaViagem.API.Controllers
             if (result.IsFailure)
                 return BadRequest(result);
 
+            Viagem viagem = result.Value;
+            if(viagem.DataFinal < DateTime.Now)
+            {
+                viagem.EncerrarViagem();
+                return NoContent();
+            }
+
             ViagemDTO viagemDTO = result.Value.ConverterViagemParaDTO();
 
             return Ok(viagemDTO);
         }
+        */
 
-        [HttpPut("Iniciar viagem")]
+        [HttpPatch]
+        [Route("IniciarViagem")]
         public async Task<ActionResult> IniciarViagem()
         {
             Result<Viagem> result = await _viagemService.ObterViagemAberta();
@@ -139,7 +149,8 @@ namespace DespesaViagem.API.Controllers
             return Ok(viagemDTO);            
         }
 
-        [HttpPut("Encerrar viagem")]
+        [HttpPatch]
+        [Route("EncerrarViagem")]
         public async Task<ActionResult> EncerrarViagem()
         {
             Result<Viagem> result = await _viagemService.ObterViagemEmAndamento();
@@ -159,7 +170,8 @@ namespace DespesaViagem.API.Controllers
             return Ok(viagemDTO);
         }
 
-        [HttpPost("Novo")]
+        [HttpPost]        
+        [Route("Novo")]
         public async Task<ActionResult> InserirViagem(ViagemDTO viagemDTO)
         {
             viagemDTO.StatusViagem = string.Empty;

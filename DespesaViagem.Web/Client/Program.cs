@@ -14,10 +14,11 @@ namespace DespesaViagem.Web
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             //var baseUrl = "http://localhost:5059";
-            var baseUrl = "https://localhost:7234";
+            var baseUrl = "https://localhost:44370";
+            //var baseUrl = "https://localhost:7234";
             builder.Services.AddScoped(client => new HttpClient
             {
                 BaseAddress = new Uri(baseUrl)

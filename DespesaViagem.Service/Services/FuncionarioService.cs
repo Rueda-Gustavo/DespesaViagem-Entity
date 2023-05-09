@@ -19,13 +19,13 @@ namespace DespesaViagem.Service.Services
             return Result.FailureIf(funcionarios is null, funcionarios, "Não foram encontrados funcionários.");
         }
 
-        public async Task<Result<Funcionario>> ObterFuncionarioPorId(string id)
+        public async Task<Result<Funcionario>> ObterFuncionarioPorId(int id)
         {
-            _ = int.TryParse(id, out int idFuncionario);
+            //_ = int.TryParse(id, out int idFuncionario);
 
-            if(idFuncionario > 0)
+            if(id > 0)
             {
-                Funcionario funcionario = await _funcionarioRepository.ObterPorIdAsync(idFuncionario);
+                Funcionario funcionario = await _funcionarioRepository.ObterPorIdAsync(id);
                 return Result.FailureIf(funcionario is null, funcionario, "Funcionário não encontrado.");
             }
 

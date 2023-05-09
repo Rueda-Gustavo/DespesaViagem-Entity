@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DespesaViagem.Infra", "Desp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DespesaViagem.Service", "DespesaViagem.Service\DespesaViagem.Service.csproj", "{3A0A63D4-5818-409B-9A9A-5F3DCC1F0000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DespesaViagem.Web", "DespesaViagem.Web\DespesaViagem.Web.csproj", "{FC9BAEF2-64B4-4EFD-806D-5A126CC3A6CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DespesaViagem.Web", "DespesaViagem.Web\DespesaViagem.Web.csproj", "{FC9BAEF2-64B4-4EFD-806D-5A126CC3A6CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DespesaViagem.API", "DespesaViagem.API\DespesaViagem.API.csproj", "{9FAC9996-71F7-41EC-828D-60268AA2081B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DespesaViagem.API", "DespesaViagem.API\DespesaViagem.API.csproj", "{9FAC9996-71F7-41EC-828D-60268AA2081B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
