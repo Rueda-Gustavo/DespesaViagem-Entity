@@ -1,20 +1,15 @@
 ﻿@page "/"
 @inject IViagemDataClient _viagemDataClient;
-<PageTitle>Index</PageTitle>
-
-Welcome to your new app.
-
-
-<SurveyPrompt Title="How is Blazor working for you?" />
 
 @if (ViagensComFuncionarios != null)
 {
-    @foreach (var item in ViagensComFuncionarios)
-    {
-        <ExibirViagemAberta Viagem="@item.Item1" Funcionario="@item.Item2"></ExibirViagemAberta>
-    }
+    <div class="card-container">
+        @foreach (var item in ViagensComFuncionarios)
+        {
+            <ExibirViagens Viagem="@item.Item1" Funcionario="@item.Item2"></ExibirViagens>
+        }
+    </div>
 }
-
 
 @code {
 
@@ -23,7 +18,7 @@ Welcome to your new app.
     public IEnumerable<Tuple<ViagemDTO, FuncionarioDTO>> ViagensComFuncionarios { get; set; }
 
     public string MessageError { get; set; }
-       
+
 
     protected override async Task OnInitializedAsync()
     {

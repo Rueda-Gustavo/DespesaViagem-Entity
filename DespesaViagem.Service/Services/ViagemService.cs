@@ -70,7 +70,7 @@ namespace DespesaViagem.Service.Services
             if (await ViagemEmAndamento() || await ViagemAberta())
                 return Result.Failure<Viagem>("Já existe uma viagem aberta ou em andamento.");
 
-            if(viagem.DataFinal.AddDays(-1) < viagem.DataInicial)
+            if(viagem.DataFinal < viagem.DataInicial)
                 return Result.Failure<Viagem>("Insira uma período válido, com pelo menos 1 dia de diferença entre as datas inicial e final. Por exemplo: Data inicial dia 01 e data final dia 02");
 
             await _viagemRepository.InsertAsync(viagem);
